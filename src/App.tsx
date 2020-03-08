@@ -1,11 +1,18 @@
 import React from "react";
 import { Wallet } from "./components/Wallet/Wallet";
+import { ThemeProvider, CssBaseline } from "@material-ui/core";
+import { theme } from "./styles/material";
+import "./styles/global.scss";
+import { SnackbarProvider } from "notistack";
 
 function App() {
   return (
-    <div className="App">
-      <Wallet />
-    </div>
+    <SnackbarProvider maxSnack={3}>
+      <ThemeProvider theme={theme}>
+        <CssBaseline />
+        <Wallet />
+      </ThemeProvider>
+    </SnackbarProvider>
   );
 }
 

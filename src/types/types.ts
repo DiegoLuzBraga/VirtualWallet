@@ -1,4 +1,4 @@
-interface MoneyDetais {
+interface CurrencyDetais {
   code: string;
   codein: string;
   name: string;
@@ -12,7 +12,15 @@ interface MoneyDetais {
   create_date: string;
 }
 
-export interface MoneySymbols {
-  USD: MoneyDetais;
-  EUR: MoneyDetais;
+export interface CurrencyValues {
+  USD: CurrencyDetais;
+  EUR: CurrencyDetais;
+}
+
+export interface USDValues {
+  USD: CurrencyDetais;
+}
+
+export interface EURValues {
+  EUR: CurrencyDetais;
 }

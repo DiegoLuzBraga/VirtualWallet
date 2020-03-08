@@ -1,61 +1,34 @@
-import React, { useEffect, useState } from "react";
-
-import { RequestFN } from "../../helpers/request";
-import { MoneySymbols } from "../../types/types";
-
+import React, { useEffect } from "react";
+import { useWallet } from "./useWallet";
 import { LoadingButton } from "../LoadingButton/LoadingButton";
+import { MoneyCard } from "../MoneyCard/MoneyCard";
 
 export const Wallet = () => {
-  const [data, setData] = useState<MoneySymbols>({
-    USD: {
-      code: "",
-      codein: "",
-      name: "",
-      high: "",
-      low: "",
-      varBid: "",
-      pctChange: "",
-      bid: "",
-      ask: "",
-      timestamp: "",
-      create_date: ""
-    },
-    EUR: {
-      code: "",
-      codein: "",
-      name: "",
-      high: "",
-      low: "",
-      varBid: "",
-      pctChange: "",
-      bid: "",
-      ask: "",
-      timestamp: "",
-      create_date: ""
-    }
-  });
-  const [loading, setLoading] = useState<boolean>(false);
+  const { getDollarAndEuro, data, loading } = useWallet();
 
   useEffect(() => {
-    getAll();
+    getDollarAndEuro();
   }, []);
 
-  const getAll = async () => {
-    setLoading(true);
-    return RequestFN<MoneySymbols>("https://economia.awesomeapi.com.br/all")
-      .then(response => setData(response))
-      .catch(error => console.error(error.message))
-      .finally(() => setLoading(false));
-  };
-
   return (
-    <div key={data.USD.ask}>
-      Hi, I`m going to be amazing!
-      <LoadingButton children="Atualizar!" loading={loading} onClick={getAll} />
-      <div>
-        Valor de compra: {data.USD.bid}
-        Valor de venda: {data.USD.ask}
-      </div>
+    <div>
+      <LoadingButton
+        children="Atualizar!"
+        loading={loading}
+        onClick={getDollarAndEuro}
+      />
+      <MoneyCard
+        ask={data.USD.ask}
+        bid={data.USD.bid}
+        date={data.USD.create_date}
+        mark="dollar"
+      />
+      <MoneyCard
+        ask={data.EUR.ask}
+        bid={data.EUR.bid}
+        date={data.EUR.create_date}
+        mark="dollar"
+      />
     </div>
   );
 };
