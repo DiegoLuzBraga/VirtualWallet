@@ -1,7 +1,6 @@
 import { useState } from "react";
-import { CurrencyValues, USDValues, EURValues } from "../../types/types";
+import { CurrencyValues, USDValues, EURValues, coins } from "../../types/types";
 import { RequestFN } from "../../helpers/request";
-import { useSnackbar, OptionsObject } from "notistack";
 import { useNotification } from "../../hooks/useNotification";
 
 export function useWallet() {
@@ -33,12 +32,31 @@ export function useWallet() {
       create_date: ""
     }
   });
-  const [loading, setLoading] = useState<boolean>(false);
+
+  const [loadings, setLoadings] = useState<{
+    all: boolean;
+    dollar: boolean;
+    euro: boolean;
+  }>({
+    all: false,
+    dollar: false,
+    euro: false
+  });
+
+  const [wallet, setWallet] = useState<{
+    real: number[];
+    dollar: number[];
+    euro: number[];
+  }>({
+    real: [],
+    dollar: [],
+    euro: []
+  });
 
   const showNotification = useNotification();
 
   const getDollarAndEuro = async () => {
-    setLoading(true);
+    setLoadings({ ...loadings, all: true });
     await RequestFN<CurrencyValues>(
       "https://economia.awesomeapi.com.br/all/USD-BRL,EUR-BRL"
     )
@@ -46,28 +64,46 @@ export function useWallet() {
       .catch(() =>
         showNotification("Houve um erro interno, tente novamente!", "error")
       )
-      .finally(() => setLoading(false));
+      .finally(() => setLoadings({ ...loadings, all: false }));
   };
 
   const getDollar = async () => {
-    setLoading(true);
+    setLoadings({ ...loadings, dollar: false });
     await RequestFN<USDValues>("https://economia.awesomeapi.com.br/all/USD-BRL")
       .then(response => setData({ ...data, USD: response.USD }))
       .catch(error =>
         showNotification("Houve um erro interno, tente novamente!", "error")
       )
-      .finally(() => setLoading(false));
+      .finally(() => setLoadings({ ...loadings, dollar: false }));
   };
 
   const getEuro = async () => {
-    setLoading(true);
+    setLoadings({ ...loadings, euro: false });
     await RequestFN<EURValues>("https://economia.awesomeapi.com.br/all/EUR-BRL")
-      .then(response => setData({ ...data, USD: response.EUR }))
+      .then(response => setData({ ...data, EUR: response.EUR }))
       .catch(error =>
         showNotification("Houve um erro interno, tente novamente!", "error")
       )
-      .finally(() => setLoading(false));
+      .finally(() => setLoadings({ ...loadings, euro: false }));
   };
 
-  return { getDollarAndEuro, getDollar, getEuro, data, loading } as const;
+  const transaction = (from: coins, to: coins, value: number) => {};
+
+  const totalInReal = () => wallet.real.reduce((acc, coin) => (acc += coin), 0);
+
+  const totalInDollar = () =>
+    wallet.dollar.reduce((acc, coin) => (acc += coin), 0);
+
+  const totalInEuro = () => wallet.euro.reduce((acc, coin) => (acc += coin), 0);
+
+  return {
+    getDollarAndEuro,
+    getDollar,
+    getEuro,
+    totalInReal,
+    totalInDollar,
+    totalInEuro,
+    data,
+    loadings
+  } as const;
 }

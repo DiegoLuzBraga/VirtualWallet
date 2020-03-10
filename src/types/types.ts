@@ -24,3 +24,5 @@ export interface USDValues {
 export interface EURValues {
   EUR: CurrencyDetais;
 }
+
+export type coins = "real" | "dollar" | "euro";
