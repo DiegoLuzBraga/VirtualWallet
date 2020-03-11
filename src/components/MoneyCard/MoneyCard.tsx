@@ -16,8 +16,7 @@ interface Props {
 
 const useStyle = makeStyles({
   card: {
-    height: "300px",
-    width: "200px",
+    padding: "16px",
     color: "#fff",
     display: "flex",
     justifyContent: "space-evenly",
@@ -25,11 +24,10 @@ const useStyle = makeStyles({
     flexDirection: "column",
     backgroundColor: "#50A0DB",
     borderRadius: "20px",
-    boxShadow: "0 10px 5px #B0CDEF"
+    boxShadow: "0 2px 8px rgba(0, 0, 0, 0.2)"
   },
   cardEuro: {
-    height: "300px",
-    width: "200px",
+    padding: "16px",
     color: "#fff",
     display: "flex",
     justifyContent: "space-evenly",
@@ -38,11 +36,19 @@ const useStyle = makeStyles({
     borderRadius: "20px",
     marginLeft: "30px",
     backgroundColor: "#378943",
-    boxShadow: "0 10px 5px #B0CDEF"
+    boxShadow: "0 2px 8px rgba(0, 0, 0, 0.2)"
   },
+  title: { display: "flex", alignItems: "center" },
+  button: { marginLeft: "40px" },
   icon: {
+    marginRight: "8px",
     color: "#000",
     borderRadius: "8px"
+  },
+  dates: {
+    color: "#d9d9d9",
+    fontSize: "11px",
+    marginTop: "4px"
   }
 });
 
@@ -70,16 +76,22 @@ export const MoneyCard = ({
 
   return (
     <div className={mark === "dollar" ? classes.card : classes.cardEuro}>
-      {iconByMark()}
-      <h3>{translate[mark]}</h3>
-      <label>Valor de compra: {toMoney(bid)}</label>
-      <label>Valor de venda: {toMoney(ask)}</label>
-      <label>{formatDate(date, "DD/MM/YYYY HH:mm").replace(" ", " às ")}</label>
-      <LoadingButton
-        children="Atualizar!"
-        loading={loading}
-        onClick={updateCurrency}
-      />
+      <h3 className={classes.title}>
+        {iconByMark()} {translate[mark]}{" "}
+        <LoadingButton
+          className={classes.button}
+          children=""
+          loading={loading}
+          onClick={updateCurrency}
+        />
+      </h3>
+      <label className={classes.dates}>
+        {formatDate(date, "DD/MM/YYYY HH:mm").replace(" ", " às ")}
+      </label>
+      <div>
+        <label>C: {toMoney(bid)}</label>
+        <label>V: {toMoney(ask)}</label>
+      </div>
     </div>
   );
 };

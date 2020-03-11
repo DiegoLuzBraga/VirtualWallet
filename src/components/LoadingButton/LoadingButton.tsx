@@ -7,6 +7,7 @@ import { WithStyles } from "@material-ui/core/styles/withStyles";
 
 interface Props {
   loading: boolean;
+  className: string;
   children: React.ReactNode;
   onClick(): Promise<void>;
 }
@@ -22,9 +23,9 @@ const SpinnerAdornment = withStyles(styles)((props: WithStyles) => (
 ));
 
 export const LoadingButton = (props: Props) => {
-  const { children, loading, ...rest } = props;
+  const { children, loading, className, ...rest } = props;
   return (
-    <Button {...rest} variant="contained" color="primary">
+    <Button {...rest} variant="contained" className={className} color="primary">
       {loading && <SpinnerAdornment {...rest} />}
       {!loading && <LoopIcon />}
       {children}
