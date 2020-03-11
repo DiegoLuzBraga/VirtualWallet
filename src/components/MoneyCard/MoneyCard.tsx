@@ -1,6 +1,6 @@
 import React from "react";
 import { makeStyles } from "@material-ui/core";
-import { formatDate, numberToMoney } from "../../helpers/masks";
+import { formatDate, toMoney } from "../../helpers/masks";
 import AttachMoneyRoundedIcon from "@material-ui/icons/AttachMoneyRounded";
 import EuroSymbolRoundedIcon from "@material-ui/icons/EuroSymbolRounded";
 import { LoadingButton } from "../LoadingButton/LoadingButton";
@@ -25,7 +25,7 @@ const useStyle = makeStyles({
     flexDirection: "column",
     backgroundColor: "#50A0DB",
     borderRadius: "20px",
-    boxShadow: "5px 4px 20px #50A0DB"
+    boxShadow: "0 10px 5px #B0CDEF"
   },
   cardEuro: {
     height: "300px",
@@ -36,9 +36,9 @@ const useStyle = makeStyles({
     alignItems: "center",
     flexDirection: "column",
     borderRadius: "20px",
-    marginLeft: "12px",
+    marginLeft: "30px",
     backgroundColor: "#378943",
-    boxShadow: "5px 4px 20px #378943"
+    boxShadow: "0 10px 5px #B0CDEF"
   },
   icon: {
     color: "#000",
@@ -72,8 +72,8 @@ export const MoneyCard = ({
     <div className={mark === "dollar" ? classes.card : classes.cardEuro}>
       {iconByMark()}
       <h3>{translate[mark]}</h3>
-      <label>Valor de compra: {numberToMoney(bid)}</label>
-      <label>Valor de venda: {numberToMoney(ask)}</label>
+      <label>Valor de compra: {toMoney(bid)}</label>
+      <label>Valor de venda: {toMoney(ask)}</label>
       <label>{formatDate(date, "DD/MM/YYYY HH:mm").replace(" ", " às ")}</label>
       <LoadingButton
         children="Atualizar!"

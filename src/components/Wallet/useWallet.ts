@@ -2,6 +2,7 @@ import { useState } from "react";
 import { CurrencyValues, USDValues, EURValues, coins } from "../../types/types";
 import { RequestFN } from "../../helpers/request";
 import { useNotification } from "../../hooks/useNotification";
+import { numberToMoney } from "../../helpers/masks";
 
 export function useWallet() {
   const [data, setData] = useState<CurrencyValues>({
@@ -43,14 +44,10 @@ export function useWallet() {
     euro: false
   });
 
-  const [wallet, setWallet] = useState<{
-    real: number[];
-    dollar: number[];
-    euro: number[];
-  }>({
-    real: [],
-    dollar: [],
-    euro: []
+  const [wallet, setWallet] = useState<Record<coins, number>>({
+    real: 500000,
+    dollar: 0,
+    euro: 0
   });
 
   const showNotification = useNotification();
@@ -87,23 +84,61 @@ export function useWallet() {
       .finally(() => setLoadings({ ...loadings, euro: false }));
   };
 
-  const transaction = (from: coins, to: coins, value: number) => {};
+  const doTransaction = (
+    from: coins,
+    to: coins,
+    fee: number,
+    value: number
+  ) => {
+    if (wallet[from] < value) {
+      return showNotification(
+        "O valor escolhido é maior do que o limite disponível!",
+        "warning"
+      );
+    } else {
+      return setWallet({
+        ...wallet,
+        [from]: wallet[from] - value,
+        [to]: wallet[to] + value * fee
+      });
+    }
+  };
 
-  const totalInReal = () => wallet.real.reduce((acc, coin) => (acc += coin), 0);
-
-  const totalInDollar = () =>
-    wallet.dollar.reduce((acc, coin) => (acc += coin), 0);
-
-  const totalInEuro = () => wallet.euro.reduce((acc, coin) => (acc += coin), 0);
+  const transaction = (from: coins, to: coins, fee: number, value: number) => {
+    const dictionary = {
+      real: {
+        dollar: () => doTransaction(from, to, fee, value),
+        euro: () => doTransaction(from, to, fee, value),
+        real: () =>
+          showNotification("Por favor, selecione outra moeda!", "warning")
+      },
+      dollar: {
+        dollar: () =>
+          showNotification("Por favor, selecione outra moeda!", "warning"),
+        euro: () => doTransaction(from, to, fee, value),
+        real: () => doTransaction(from, to, fee, value)
+      },
+      euro: {
+        dollar: () => doTransaction(from, to, fee, value),
+        euro: () =>
+          showNotification("Por favor, selecione outra moeda!", "warning"),
+        real: () => doTransaction(from, to, fee, value)
+      }
+    };
+    return dictionary[from][to];
+  };
 
   return {
     getDollarAndEuro,
     getDollar,
     getEuro,
-    totalInReal,
-    totalInDollar,
-    totalInEuro,
+    totalInReal: numberToMoney(
+      wallet["real"] - wallet["dollar"] - wallet["euro"]
+    ),
+    totalInDollar: numberToMoney(wallet["dollar"], "$"),
+    totalInEuro: numberToMoney(wallet["euro"], "€"),
     data,
-    loadings
+    loadings,
+    transaction
   } as const;
 }
