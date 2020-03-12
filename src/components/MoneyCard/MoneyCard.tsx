@@ -24,6 +24,8 @@ const useStyle = makeStyles({
     flexDirection: "column",
     backgroundColor: "#50A0DB",
     borderRadius: "20px",
+    marginRight: "30px",
+    marginTop: "2px",
     boxShadow: "0 2px 8px rgba(0, 0, 0, 0.2)"
   },
   cardEuro: {
@@ -34,8 +36,8 @@ const useStyle = makeStyles({
     alignItems: "center",
     flexDirection: "column",
     borderRadius: "20px",
-    marginLeft: "30px",
     backgroundColor: "#378943",
+    marginTop: "2px",
     boxShadow: "0 2px 8px rgba(0, 0, 0, 0.2)"
   },
   title: { display: "flex", alignItems: "center" },
@@ -49,6 +51,16 @@ const useStyle = makeStyles({
     color: "#d9d9d9",
     fontSize: "11px",
     marginTop: "4px"
+  },
+  coinValues: {
+    backgroundColor: "#fff",
+    borderRadius: "20px",
+    color: "#000",
+    display: "flex",
+    justifyContent: "center",
+    flexDirection: "column",
+    marginTop: "8px",
+    padding: "16px"
   }
 });
 
@@ -88,7 +100,7 @@ export const MoneyCard = ({
       <label className={classes.dates}>
         {formatDate(date, "DD/MM/YYYY HH:mm").replace(" ", " às ")}
       </label>
-      <div>
+      <div className={classes.coinValues}>
         <label>C: {toMoney(bid)}</label>
         <label>V: {toMoney(ask)}</label>
       </div>

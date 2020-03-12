@@ -50,6 +50,11 @@ export function useWallet() {
     euro: 0
   });
 
+  const [fee, setFee] = useState<{ from: number; to: number }>({
+    from: 0,
+    to: 0
+  });
+
   const showNotification = useNotification();
 
   const getDollarAndEuro = async () => {
@@ -139,6 +144,8 @@ export function useWallet() {
     totalInEuro: numberToMoney(wallet["euro"], "€"),
     data,
     loadings,
-    transaction
+    transaction,
+    setFee,
+    fee
   } as const;
 }

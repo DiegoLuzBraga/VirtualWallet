@@ -1,7 +1,8 @@
 import React, { useEffect } from "react";
 import { useWallet } from "./useWallet";
 import { MoneyCard } from "../MoneyCard/MoneyCard";
-import { makeStyles } from "@material-ui/core";
+import { makeStyles, Select, InputLabel } from "@material-ui/core";
+import { MenuItem } from "material-ui";
 
 const useStyle = makeStyles({
   wallet: {
@@ -29,7 +30,8 @@ const useStyle = makeStyles({
   },
   cardContent: {
     display: "flex",
-    padding: "32px",
+    flexWrap: "wrap",
+    padding: "30px",
     borderRadius: "30px",
     backgroundColor: "#E6F0FD"
   }
@@ -45,7 +47,9 @@ export const Wallet = () => {
     loadings,
     totalInReal,
     totalInEuro,
-    totalInDollar
+    totalInDollar,
+    setFee,
+    fee
   } = useWallet();
 
   useEffect(() => {
@@ -64,6 +68,17 @@ export const Wallet = () => {
           </div>
         </div>
         <div>
+          <InputLabel shrink id="demo-simple-select-placeholder-label-label">
+            De
+          </InputLabel>
+          <Select
+            onChange={e => setFee({ ...fee, from: Number(e.target.value) })}
+            displayEmpty
+          >
+            <MenuItem value={1}>Real</MenuItem>
+            <MenuItem value={data.USD.bid}>Dólar</MenuItem>
+            <MenuItem value={data.EUR.bid}>Euro</MenuItem>
+          </Select>
           De: Real Para: Euro
           <input />
           <button>Converter</button>
