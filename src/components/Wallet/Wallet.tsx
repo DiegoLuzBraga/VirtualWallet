@@ -88,7 +88,7 @@ export const Wallet = () => {
               De
             </InputLabel>
             <Select
-              value="real"
+              value={fee.from}
               onChange={e => setFee({ ...fee, from: e.target.value as coins })}
             >
               <MenuItem value="real">Real</MenuItem>
@@ -101,7 +101,7 @@ export const Wallet = () => {
               Para
             </InputLabel>
             <Select
-              value="dollar"
+              value={fee.to}
               onChange={e => setFee({ ...fee, to: e.target.value as coins })}
             >
               <MenuItem value="real">Real</MenuItem>

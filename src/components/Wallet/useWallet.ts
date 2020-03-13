@@ -52,7 +52,7 @@ export function useWallet() {
 
   const [fee, setFee] = useState<{ from: coins; to: coins }>({
     from: "real",
-    to: "real"
+    to: "dollar"
   });
 
   const [value, setValue] = useState<number>(0);
@@ -96,7 +96,7 @@ export function useWallet() {
     to: { target: coins; value: number },
     value: number
   ) => {
-    if (wallet[from.target] < value) {
+    if (wallet[from.target] < value * 100) {
       return showNotification(
         "O valor escolhido é maior do que o limite disponível!",
         "warning"
@@ -104,10 +104,13 @@ export function useWallet() {
     } else {
       return setWallet({
         ...wallet,
-        [from.target]: wallet[from.target] - value,
-        [to.target]:
-          wallet[to.target] +
-          (value * from.value * 100) / (to.value * 100) / 100
+        [from.target]: wallet[from.target] - value * 100,
+        [to.target]: Number(
+          (
+            wallet[to.target] +
+            ((value * 100 * from.value) / to.value) * 100
+          ).toFixed(2)
+        )
       });
     }
   };
@@ -118,13 +121,29 @@ export function useWallet() {
         dollar: () =>
           doTransaction(
             { target: from, value: 1 },
-            { target: to, value: Number(toMoney(data.USD.bid)) },
+            {
+              target: to,
+              value:
+                Number(
+                  toMoney(data.USD.bid)
+                    .replace("R$ ", "")
+                    .replace(",", ".")
+                ) * 100
+            },
             value
           ),
         euro: () =>
           doTransaction(
             { target: from, value: 1 },
-            { target: to, value: Number(toMoney(data.EUR.bid)) },
+            {
+              target: to,
+              value:
+                Number(
+                  toMoney(data.EUR.bid)
+                    .replace("R$ ", "")
+                    .replace(",", ".")
+                ) * 100
+            },
             value
           ),
         real: () =>
@@ -135,13 +154,37 @@ export function useWallet() {
           showNotification("Por favor, selecione outra moeda!", "warning"),
         euro: () =>
           doTransaction(
-            { target: to, value: Number(toMoney(data.USD.bid)) },
-            { target: from, value: Number(toMoney(data.EUR.bid)) },
+            {
+              target: to,
+              value:
+                Number(
+                  toMoney(data.USD.bid)
+                    .replace("R$ ", "")
+                    .replace(",", ".")
+                ) * 100
+            },
+            {
+              target: from,
+              value:
+                Number(
+                  toMoney(data.EUR.bid)
+                    .replace("R$ ", "")
+                    .replace(",", ".")
+                ) * 100
+            },
             value
           ),
         real: () =>
           doTransaction(
-            { target: to, value: Number(toMoney(data.USD.bid)) },
+            {
+              target: to,
+              value:
+                Number(
+                  toMoney(data.USD.bid)
+                    .replace("R$ ", "")
+                    .replace(",", ".")
+                ) * 100
+            },
             { target: from, value: 1 },
             value
           )
@@ -149,21 +192,44 @@ export function useWallet() {
       euro: {
         dollar: () =>
           doTransaction(
-            { target: to, value: Number(toMoney(data.EUR.bid)) },
-            { target: from, value: Number(toMoney(data.USD.bid)) },
+            {
+              target: to,
+              value:
+                Number(
+                  toMoney(data.EUR.bid)
+                    .replace("R$ ", "")
+                    .replace(",", ".")
+                ) * 100
+            },
+            {
+              target: from,
+              value:
+                Number(
+                  toMoney(data.USD.bid)
+                    .replace("R$ ", "")
+                    .replace(",", ".")
+                ) * 100
+            },
             value
           ),
         euro: () =>
           showNotification("Por favor, selecione outra moeda!", "warning"),
         real: () =>
           doTransaction(
-            { target: to, value: Number(toMoney(data.EUR.bid)) },
+            {
+              target: to,
+              value:
+                Number(
+                  toMoney(data.EUR.bid)
+                    .replace("R$ ", "")
+                    .replace(",", ".")
+                ) * 100
+            },
             { target: from, value: 1 },
             value
           )
       }
     };
-    console.log(dictionary[from][to]());
     return dictionary[from][to]();
   };
 
