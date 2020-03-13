@@ -2,7 +2,7 @@ import { useState } from "react";
 import { CurrencyValues, USDValues, EURValues, coins } from "../../types/types";
 import { RequestFN } from "../../helpers/request";
 import { useNotification } from "../../hooks/useNotification";
-import { numberToMoney } from "../../helpers/masks";
+import { numberToMoney, toMoney } from "../../helpers/masks";
 
 export function useWallet() {
   const [data, setData] = useState<CurrencyValues>({
@@ -50,10 +50,12 @@ export function useWallet() {
     euro: 0
   });
 
-  const [fee, setFee] = useState<{ from: number; to: number }>({
-    from: 0,
-    to: 0
+  const [fee, setFee] = useState<{ from: coins; to: coins }>({
+    from: "real",
+    to: "real"
   });
+
+  const [value, setValue] = useState<number>(0);
 
   const showNotification = useNotification();
 
@@ -90,12 +92,11 @@ export function useWallet() {
   };
 
   const doTransaction = (
-    from: coins,
-    to: coins,
-    fee: number,
+    from: { target: coins; value: number },
+    to: { target: coins; value: number },
     value: number
   ) => {
-    if (wallet[from] < value) {
+    if (wallet[from.target] < value) {
       return showNotification(
         "O valor escolhido é maior do que o limite disponível!",
         "warning"
@@ -103,34 +104,67 @@ export function useWallet() {
     } else {
       return setWallet({
         ...wallet,
-        [from]: wallet[from] - value,
-        [to]: wallet[to] + value * fee
+        [from.target]: wallet[from.target] - value,
+        [to.target]:
+          wallet[to.target] +
+          (value * from.value * 100) / (to.value * 100) / 100
       });
     }
   };
 
-  const transaction = (from: coins, to: coins, fee: number, value: number) => {
+  const transaction = (from: coins, to: coins, value: number) => {
     const dictionary = {
       real: {
-        dollar: () => doTransaction(from, to, fee, value),
-        euro: () => doTransaction(from, to, fee, value),
+        dollar: () =>
+          doTransaction(
+            { target: from, value: 1 },
+            { target: to, value: Number(toMoney(data.USD.bid)) },
+            value
+          ),
+        euro: () =>
+          doTransaction(
+            { target: from, value: 1 },
+            { target: to, value: Number(toMoney(data.EUR.bid)) },
+            value
+          ),
         real: () =>
           showNotification("Por favor, selecione outra moeda!", "warning")
       },
       dollar: {
         dollar: () =>
           showNotification("Por favor, selecione outra moeda!", "warning"),
-        euro: () => doTransaction(from, to, fee, value),
-        real: () => doTransaction(from, to, fee, value)
+        euro: () =>
+          doTransaction(
+            { target: to, value: Number(toMoney(data.USD.bid)) },
+            { target: from, value: Number(toMoney(data.EUR.bid)) },
+            value
+          ),
+        real: () =>
+          doTransaction(
+            { target: to, value: Number(toMoney(data.USD.bid)) },
+            { target: from, value: 1 },
+            value
+          )
       },
       euro: {
-        dollar: () => doTransaction(from, to, fee, value),
+        dollar: () =>
+          doTransaction(
+            { target: to, value: Number(toMoney(data.EUR.bid)) },
+            { target: from, value: Number(toMoney(data.USD.bid)) },
+            value
+          ),
         euro: () =>
           showNotification("Por favor, selecione outra moeda!", "warning"),
-        real: () => doTransaction(from, to, fee, value)
+        real: () =>
+          doTransaction(
+            { target: to, value: Number(toMoney(data.EUR.bid)) },
+            { target: from, value: 1 },
+            value
+          )
       }
     };
-    return dictionary[from][to];
+    console.log(dictionary[from][to]());
+    return dictionary[from][to]();
   };
 
   return {
@@ -146,6 +180,8 @@ export function useWallet() {
     loadings,
     transaction,
     setFee,
-    fee
+    fee,
+    value,
+    setValue
   } as const;
 }

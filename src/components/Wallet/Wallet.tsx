@@ -1,8 +1,9 @@
 import React, { useEffect } from "react";
-import { useWallet } from "./useWallet";
-import { MoneyCard } from "../MoneyCard/MoneyCard";
 import { makeStyles, Select, InputLabel } from "@material-ui/core";
-import { MenuItem } from "material-ui";
+import { MenuItem } from "@material-ui/core";
+import { MoneyCard } from "../MoneyCard/MoneyCard";
+import { coins } from "../../types/types";
+import { useWallet } from "./useWallet";
 
 const useStyle = makeStyles({
   wallet: {
@@ -17,7 +18,8 @@ const useStyle = makeStyles({
   },
   valuesByCoin: {
     display: "flex",
-    flexDirection: "column"
+    flexDirection: "column",
+    marginLeft: "8px"
   },
   walletContent: {
     display: "flex",
@@ -34,6 +36,16 @@ const useStyle = makeStyles({
     padding: "30px",
     borderRadius: "30px",
     backgroundColor: "#E6F0FD"
+  },
+  converter: {
+    display: "flex",
+    flexDirection: "row"
+  },
+  selects: {
+    width: "65px",
+    display: "flex",
+    flexDirection: "column",
+    marginLeft: "16px"
   }
 });
 
@@ -48,8 +60,11 @@ export const Wallet = () => {
     totalInReal,
     totalInEuro,
     totalInDollar,
+    transaction,
     setFee,
-    fee
+    fee,
+    setValue,
+    value
   } = useWallet();
 
   useEffect(() => {
@@ -67,21 +82,40 @@ export const Wallet = () => {
             <h2>Euro: {totalInEuro}</h2>
           </div>
         </div>
-        <div>
-          <InputLabel shrink id="demo-simple-select-placeholder-label-label">
-            De
-          </InputLabel>
-          <Select
-            onChange={e => setFee({ ...fee, from: Number(e.target.value) })}
-            displayEmpty
-          >
-            <MenuItem value={1}>Real</MenuItem>
-            <MenuItem value={data.USD.bid}>Dólar</MenuItem>
-            <MenuItem value={data.EUR.bid}>Euro</MenuItem>
-          </Select>
-          De: Real Para: Euro
-          <input />
-          <button>Converter</button>
+        <div className={classes.converter}>
+          <div className={classes.selects}>
+            <InputLabel shrink id="demo-simple-select-placeholder-label-label">
+              De
+            </InputLabel>
+            <Select
+              value="real"
+              onChange={e => setFee({ ...fee, from: e.target.value as coins })}
+            >
+              <MenuItem value="real">Real</MenuItem>
+              <MenuItem value="dollar">Dólar</MenuItem>
+              <MenuItem value="euro">Euro</MenuItem>
+            </Select>
+          </div>
+          <div className={classes.selects}>
+            <InputLabel shrink id="demo-simple-select-placeholder-label-label">
+              Para
+            </InputLabel>
+            <Select
+              value="dollar"
+              onChange={e => setFee({ ...fee, to: e.target.value as coins })}
+            >
+              <MenuItem value="real">Real</MenuItem>
+              <MenuItem value="dollar">Dólar</MenuItem>
+              <MenuItem value="euro">Euro</MenuItem>
+            </Select>
+          </div>
+          <input
+            type="number"
+            onChange={e => setValue(Number(e.target.value))}
+          />
+          <button onClick={() => transaction(fee.from, fee.to, value)}>
+            Converter
+          </button>
         </div>
       </div>
       <div className={classes.cardContent}>
@@ -89,6 +123,7 @@ export const Wallet = () => {
           ask={data.USD.ask}
           bid={data.USD.bid}
           date={data.USD.create_date}
+          dollar
           loading={loadings.dollar}
           mark="dollar"
           updateCurrency={getDollar}

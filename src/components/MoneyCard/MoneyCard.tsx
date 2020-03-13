@@ -9,6 +9,7 @@ interface Props {
   ask: string;
   bid: string;
   date: string;
+  dollar?: boolean;
   loading: boolean;
   mark: "dollar" | "euro";
   updateCurrency(): Promise<void>;
@@ -22,7 +23,7 @@ const useStyle = makeStyles({
     justifyContent: "space-evenly",
     alignItems: "center",
     flexDirection: "column",
-    backgroundColor: "#50A0DB",
+    backgroundColor: "#9AC5E5",
     borderRadius: "20px",
     marginRight: "30px",
     marginTop: "2px",
@@ -36,7 +37,7 @@ const useStyle = makeStyles({
     alignItems: "center",
     flexDirection: "column",
     borderRadius: "20px",
-    backgroundColor: "#378943",
+    backgroundColor: "#9FC9A5",
     marginTop: "2px",
     boxShadow: "0 2px 8px rgba(0, 0, 0, 0.2)"
   },
@@ -61,6 +62,14 @@ const useStyle = makeStyles({
     flexDirection: "column",
     marginTop: "8px",
     padding: "16px"
+  },
+  bid: {
+    color: "green",
+    fontWeight: "bold"
+  },
+  ask: {
+    color: "red",
+    fontWeight: "bold"
   }
 });
 
@@ -68,6 +77,7 @@ export const MoneyCard = ({
   ask,
   bid,
   date,
+  dollar,
   loading,
   mark,
   updateCurrency
@@ -92,17 +102,21 @@ export const MoneyCard = ({
         {iconByMark()} {translate[mark]}{" "}
         <LoadingButton
           className={classes.button}
-          children=""
           loading={loading}
           onClick={updateCurrency}
+          dollar={dollar}
         />
       </h3>
       <label className={classes.dates}>
         {formatDate(date, "DD/MM/YYYY HH:mm").replace(" ", " às ")}
       </label>
       <div className={classes.coinValues}>
-        <label>C: {toMoney(bid)}</label>
-        <label>V: {toMoney(ask)}</label>
+        <label>
+          <span className={classes.bid}>C</span>: {toMoney(bid)}
+        </label>
+        <label>
+          <span className={classes.ask}>V</span>: {toMoney(ask)}
+        </label>
       </div>
     </div>
   );
