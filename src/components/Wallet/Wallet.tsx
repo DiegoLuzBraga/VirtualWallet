@@ -2,6 +2,7 @@ import React, { useEffect } from "react";
 import { makeStyles, Select, InputLabel } from "@material-ui/core";
 import { MenuItem } from "@material-ui/core";
 import { MoneyCard } from "../MoneyCard/MoneyCard";
+import { justNumbers, currencyMask } from "../../helpers/masks";
 import { coins } from "../../types/types";
 import { useWallet } from "./useWallet";
 
@@ -110,8 +111,9 @@ export const Wallet = () => {
             </Select>
           </div>
           <input
-            type="number"
-            onChange={e => setValue(Number(e.target.value))}
+            type="text"
+            value={currencyMask(value, 2, ",", ".").toString()}
+            onChange={e => setValue(Number(justNumbers(e.target.value)))}
           />
           <button onClick={() => transaction(fee.from, fee.to, value)}>
             Converter

@@ -1,8 +1,9 @@
 import { useState } from "react";
+import currency from "currency.js";
 import { CurrencyValues, USDValues, EURValues, coins } from "../../types/types";
 import { RequestFN } from "../../helpers/request";
 import { useNotification } from "../../hooks/useNotification";
-import { numberToMoney, toMoney } from "../../helpers/masks";
+import { toMoney } from "../../helpers/masks";
 
 export function useWallet() {
   const [data, setData] = useState<CurrencyValues>({
@@ -45,7 +46,7 @@ export function useWallet() {
   });
 
   const [wallet, setWallet] = useState<Record<coins, number>>({
-    real: 500000,
+    real: 5000,
     dollar: 0,
     euro: 0
   });
@@ -96,7 +97,7 @@ export function useWallet() {
     to: { target: coins; value: number },
     value: number
   ) => {
-    if (wallet[from.target] < value * 100) {
+    if (wallet[fee.from] < value / 100) {
       return showNotification(
         "O valor escolhido é maior do que o limite disponível!",
         "warning"
@@ -104,13 +105,13 @@ export function useWallet() {
     } else {
       return setWallet({
         ...wallet,
-        [from.target]: wallet[from.target] - value * 100,
-        [to.target]: Number(
-          (
-            wallet[to.target] +
-            ((value * 100 * from.value) / to.value) * 100
-          ).toFixed(2)
-        )
+        [fee.from]: currency(wallet[fee.from]).subtract(value / 100).value,
+        [fee.to]: currency(wallet[fee.to]).add(
+          currency(value)
+            .divide(100)
+            .multiply(from.value)
+            .divide(to.value).value
+        ).value
       });
     }
   };
@@ -123,12 +124,11 @@ export function useWallet() {
             { target: from, value: 1 },
             {
               target: to,
-              value:
-                Number(
-                  toMoney(data.USD.bid)
-                    .replace("R$ ", "")
-                    .replace(",", ".")
-                ) * 100
+              value: Number(
+                toMoney(data.USD.bid)
+                  .replace("R$ ", "")
+                  .replace(",", ".")
+              )
             },
             value
           ),
@@ -137,12 +137,11 @@ export function useWallet() {
             { target: from, value: 1 },
             {
               target: to,
-              value:
-                Number(
-                  toMoney(data.EUR.bid)
-                    .replace("R$ ", "")
-                    .replace(",", ".")
-                ) * 100
+              value: Number(
+                toMoney(data.EUR.bid)
+                  .replace("R$ ", "")
+                  .replace(",", ".")
+              )
             },
             value
           ),
@@ -156,21 +155,19 @@ export function useWallet() {
           doTransaction(
             {
               target: to,
-              value:
-                Number(
-                  toMoney(data.USD.bid)
-                    .replace("R$ ", "")
-                    .replace(",", ".")
-                ) * 100
+              value: Number(
+                toMoney(data.USD.bid)
+                  .replace("R$ ", "")
+                  .replace(",", ".")
+              )
             },
             {
               target: from,
-              value:
-                Number(
-                  toMoney(data.EUR.bid)
-                    .replace("R$ ", "")
-                    .replace(",", ".")
-                ) * 100
+              value: Number(
+                toMoney(data.EUR.bid)
+                  .replace("R$ ", "")
+                  .replace(",", ".")
+              )
             },
             value
           ),
@@ -178,12 +175,11 @@ export function useWallet() {
           doTransaction(
             {
               target: to,
-              value:
-                Number(
-                  toMoney(data.USD.bid)
-                    .replace("R$ ", "")
-                    .replace(",", ".")
-                ) * 100
+              value: Number(
+                toMoney(data.USD.bid)
+                  .replace("R$ ", "")
+                  .replace(",", ".")
+              )
             },
             { target: from, value: 1 },
             value
@@ -194,21 +190,19 @@ export function useWallet() {
           doTransaction(
             {
               target: to,
-              value:
-                Number(
-                  toMoney(data.EUR.bid)
-                    .replace("R$ ", "")
-                    .replace(",", ".")
-                ) * 100
+              value: Number(
+                toMoney(data.EUR.bid)
+                  .replace("R$ ", "")
+                  .replace(",", ".")
+              )
             },
             {
               target: from,
-              value:
-                Number(
-                  toMoney(data.USD.bid)
-                    .replace("R$ ", "")
-                    .replace(",", ".")
-                ) * 100
+              value: Number(
+                toMoney(data.USD.bid)
+                  .replace("R$ ", "")
+                  .replace(",", ".")
+              )
             },
             value
           ),
@@ -218,12 +212,11 @@ export function useWallet() {
           doTransaction(
             {
               target: to,
-              value:
-                Number(
-                  toMoney(data.EUR.bid)
-                    .replace("R$ ", "")
-                    .replace(",", ".")
-                ) * 100
+              value: Number(
+                toMoney(data.EUR.bid)
+                  .replace("R$ ", "")
+                  .replace(",", ".")
+              )
             },
             { target: from, value: 1 },
             value
@@ -237,11 +230,9 @@ export function useWallet() {
     getDollarAndEuro,
     getDollar,
     getEuro,
-    totalInReal: numberToMoney(
-      wallet["real"] - wallet["dollar"] - wallet["euro"]
-    ),
-    totalInDollar: numberToMoney(wallet["dollar"], "$"),
-    totalInEuro: numberToMoney(wallet["euro"], "€"),
+    totalInReal: `R$ ${wallet["real"]}`,
+    totalInDollar: `$ ${wallet["dollar"]}`,
+    totalInEuro: `€ ${wallet["euro"]}`,
     data,
     loadings,
     transaction,
