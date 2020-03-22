@@ -1,19 +1,19 @@
 import dayjs from "dayjs";
 
-export function formatDate(date: string, format?: string): string {
+export function formatDate(date, format) {
   return dayjs(date).format(format);
 }
 
-export function toMoney(value: string): string {
+export function toMoney(value) {
   return `R$ ${value.match(/^-?\d+(?:\.\d{0,2})?/)}`.replace(".", ",");
 }
 
-export function justNumbers(num: string) {
+export function justNumbers(num) {
   return num.replace(/[^0-9]/g, "");
 }
 
 export function currencyMask(
-  value: number | string | undefined,
+  value,
   precision = 2,
   decimalSeparator = ",",
   thousandSeparator = ".",

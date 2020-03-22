@@ -2,7 +2,7 @@ import { useSnackbar, OptionsObject } from "notistack";
 
 export const useNotification = () => {
   const { enqueueSnackbar } = useSnackbar();
-  return (msg: string, variant: OptionsObject["variant"]) =>
+  return (msg, variant) =>
     enqueueSnackbar(msg, {
       variant,
       anchorOrigin: {

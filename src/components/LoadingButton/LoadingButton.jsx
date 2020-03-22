@@ -5,24 +5,17 @@ import CircularProgress from "@material-ui/core/CircularProgress";
 import LoopIcon from "@material-ui/icons/Loop";
 import { WithStyles } from "@material-ui/core/styles/withStyles";
 
-interface Props {
-  loading: boolean;
-  className: string;
-  dollar?: boolean;
-  onClick(): Promise<void>;
-}
-
 const styles = {
   root: {
     marginRight: 5
   }
 };
 
-const SpinnerAdornment = withStyles(styles)((props: WithStyles) => (
+const SpinnerAdornment = withStyles(styles)(props => (
   <CircularProgress className={props.classes.spinner} size={20} />
 ));
 
-export const LoadingButton = (props: Props) => {
+export const LoadingButton = props => {
   const { dollar, loading, className, ...rest } = props;
   return (
     <Button
@@ -31,8 +24,7 @@ export const LoadingButton = (props: Props) => {
       className={className}
       color={dollar ? "primary" : "secondary"}
     >
-      {loading && <SpinnerAdornment {...rest} />}
-      {!loading && <LoopIcon />}
+      {loading ? <SpinnerAdornment {...rest} /> : <LoopIcon />}
     </Button>
   );
 };

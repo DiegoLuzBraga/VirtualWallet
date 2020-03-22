@@ -3,7 +3,6 @@ import { makeStyles, Select, InputLabel } from "@material-ui/core";
 import { MenuItem } from "@material-ui/core";
 import { MoneyCard } from "../MoneyCard/MoneyCard";
 import { justNumbers, currencyMask } from "../../helpers/masks";
-import { coins } from "../../types/types";
 import { useWallet } from "./useWallet";
 
 const useStyle = makeStyles({
@@ -90,7 +89,7 @@ export const Wallet = () => {
             </InputLabel>
             <Select
               value={fee.from}
-              onChange={e => setFee({ ...fee, from: e.target.value as coins })}
+              onChange={e => setFee({ ...fee, from: e.target.value })}
             >
               <MenuItem value="real">Real</MenuItem>
               <MenuItem value="dollar">Dólar</MenuItem>
@@ -103,7 +102,7 @@ export const Wallet = () => {
             </InputLabel>
             <Select
               value={fee.to}
-              onChange={e => setFee({ ...fee, to: e.target.value as coins })}
+              onChange={e => setFee({ ...fee, to: e.target.value })}
             >
               <MenuItem value="real">Real</MenuItem>
               <MenuItem value="dollar">Dólar</MenuItem>

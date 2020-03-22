@@ -5,16 +5,6 @@ import AttachMoneyRoundedIcon from "@material-ui/icons/AttachMoneyRounded";
 import EuroSymbolRoundedIcon from "@material-ui/icons/EuroSymbolRounded";
 import { LoadingButton } from "../LoadingButton/LoadingButton";
 
-interface Props {
-  ask: string;
-  bid: string;
-  date: string;
-  dollar?: boolean;
-  loading: boolean;
-  mark: "dollar" | "euro";
-  updateCurrency(): Promise<void>;
-}
-
 const useStyle = makeStyles({
   card: {
     padding: "16px",
@@ -81,10 +71,10 @@ export const MoneyCard = ({
   loading,
   mark,
   updateCurrency
-}: Props) => {
+}) => {
   const classes = useStyle();
 
-  const translate: Record<"dollar" | "euro", string> = {
+  const translate = {
     dollar: "Dólar",
     euro: "Euro"
   };
