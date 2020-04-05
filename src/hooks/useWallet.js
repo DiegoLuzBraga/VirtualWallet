@@ -1,8 +1,8 @@
 import { useState } from "react";
 import currency from "currency.js";
-import { RequestFN } from "../../helpers/request";
-import { useNotification } from "../../hooks/useNotification";
-import { toMoney } from "../../helpers/masks";
+import { RequestFN } from "../helpers/request";
+import { useNotification } from "./useNotification";
+import { toMoney } from "../helpers/masks";
 
 export function useWallet() {
   const [data, setData] = useState({

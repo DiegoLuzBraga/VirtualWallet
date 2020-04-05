@@ -3,7 +3,7 @@ import { makeStyles, Select, InputLabel } from "@material-ui/core";
 import { MenuItem } from "@material-ui/core";
 import { MoneyCard } from "../MoneyCard/MoneyCard";
 import { justNumbers, currencyMask } from "../../helpers/masks";
-import { useWallet } from "./useWallet";
+import { useWallet } from "../../hooks/useWallet";
 
 const useStyle = makeStyles({
   wallet: {
