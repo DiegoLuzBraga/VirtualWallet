@@ -95,6 +95,9 @@ export function useWallet() {
       return setWallet({
         ...wallet,
         [fee.from]: currency(wallet[fee.from]).subtract(value / 100).value,
+        // this operation converts the value passed to reais
+        // and converts it again to the coin selected.
+        // In a math way: fee.to = fee.to + (value / 100) * from.value / to.value
         [fee.to]: currency(wallet[fee.to]).add(
           currency(value)
             .divide(100)

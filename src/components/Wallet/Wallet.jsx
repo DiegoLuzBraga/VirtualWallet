@@ -26,6 +26,7 @@ const useStyle = makeStyles({
     justifyContent: "space-between",
     alignItems: "baseline",
     flexDirection: "row",
+    flexWrap: "wrap",
     backgroundColor: "#fff",
     borderRadius: "20px 20px 0 0",
     padding: "25px"
@@ -39,7 +40,8 @@ const useStyle = makeStyles({
   },
   converter: {
     display: "flex",
-    flexDirection: "row"
+    flexDirection: "row",
+    flexWrap: "wrap"
   },
   selects: {
     width: "65px",
