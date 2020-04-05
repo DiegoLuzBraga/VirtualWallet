@@ -3,7 +3,6 @@ import { withStyles } from "@material-ui/core";
 import Button from "@material-ui/core/Button";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import LoopIcon from "@material-ui/icons/Loop";
-import { WithStyles } from "@material-ui/core/styles/withStyles";
 
 const styles = {
   root: {

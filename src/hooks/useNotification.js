@@ -1,4 +1,4 @@
-import { useSnackbar, OptionsObject } from "notistack";
+import { useSnackbar } from "notistack";
 
 export const useNotification = () => {
   const { enqueueSnackbar } = useSnackbar();
