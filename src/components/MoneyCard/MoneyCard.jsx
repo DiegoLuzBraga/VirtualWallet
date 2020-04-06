@@ -3,7 +3,6 @@ import { makeStyles } from "@material-ui/core";
 import { formatDate, toMoney } from "../../helpers/masks";
 import AttachMoneyRoundedIcon from "@material-ui/icons/AttachMoneyRounded";
 import EuroSymbolRoundedIcon from "@material-ui/icons/EuroSymbolRounded";
-import { LoadingButton } from "../LoadingButton/LoadingButton";
 
 const useStyle = makeStyles({
   card: {
@@ -63,15 +62,7 @@ const useStyle = makeStyles({
   }
 });
 
-export const MoneyCard = ({
-  ask,
-  bid,
-  date,
-  dollar,
-  loading,
-  mark,
-  updateCurrency
-}) => {
+export const MoneyCard = ({ ask, bid, date, mark }) => {
   const classes = useStyle();
 
   const translate = {
@@ -90,12 +81,6 @@ export const MoneyCard = ({
     <div className={mark === "dollar" ? classes.card : classes.cardEuro}>
       <h3 className={classes.title}>
         {iconByMark()} {translate[mark]}{" "}
-        <LoadingButton
-          className={classes.button}
-          loading={loading}
-          onClick={updateCurrency}
-          dollar={dollar}
-        />
       </h3>
       <label className={classes.dates}>
         {formatDate(date, "DD/MM/YYYY HH:mm").replace(" ", " às ")}

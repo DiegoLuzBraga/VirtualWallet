@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { makeStyles, Select, InputLabel } from "@material-ui/core";
 import { MenuItem } from "@material-ui/core";
 import { MoneyCard } from "../MoneyCard/MoneyCard";
@@ -54,11 +54,7 @@ const useStyle = makeStyles({
 export const Wallet = () => {
   const classes = useStyle();
   const {
-    getDollarAndEuro,
-    getDollar,
-    getEuro,
     data,
-    loadings,
     totalInReal,
     totalInEuro,
     totalInDollar,
@@ -68,10 +64,6 @@ export const Wallet = () => {
     setValue,
     value
   } = useWallet();
-
-  useEffect(() => {
-    getDollarAndEuro();
-  }, []);
 
   return (
     <div className={classes.wallet}>
@@ -126,18 +118,13 @@ export const Wallet = () => {
           ask={data.USD.ask}
           bid={data.USD.bid}
           date={data.USD.create_date}
-          dollar
-          loading={loadings.dollar}
           mark="dollar"
-          updateCurrency={getDollar}
         />
         <MoneyCard
           ask={data.EUR.ask}
           bid={data.EUR.bid}
           date={data.EUR.create_date}
-          loading={loadings.euro}
           mark="euro"
-          updateCurrency={getEuro}
         />
       </div>
     </div>

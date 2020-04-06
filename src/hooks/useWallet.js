@@ -1,44 +1,11 @@
 import { useState } from "react";
 import currency from "currency.js";
-import { RequestFN } from "../helpers/request";
 import { useNotification } from "./useNotification";
 import { toMoney } from "../helpers/masks";
+import values from "../values.json";
 
 export function useWallet() {
-  const [data, setData] = useState({
-    USD: {
-      code: "",
-      codein: "",
-      name: "",
-      high: "",
-      low: "",
-      varBid: "",
-      pctChange: "",
-      bid: "",
-      ask: "",
-      timestamp: "",
-      create_date: ""
-    },
-    EUR: {
-      code: "",
-      codein: "",
-      name: "",
-      high: "",
-      low: "",
-      varBid: "",
-      pctChange: "",
-      bid: "",
-      ask: "",
-      timestamp: "",
-      create_date: ""
-    }
-  });
-
-  const [loadings, setLoadings] = useState({
-    all: false,
-    dollar: false,
-    euro: false
-  });
+  const data = JSON.parse(values);
 
   const [wallet, setWallet] = useState({
     real: 5000,
@@ -54,36 +21,6 @@ export function useWallet() {
   const [value, setValue] = useState(0);
 
   const showNotification = useNotification();
-
-  const getDollarAndEuro = async () => {
-    setLoadings({ ...loadings, all: true });
-    await RequestFN("https://economia.awesomeapi.com.br/all/USD-BRL,EUR-BRL")
-      .then(response => setData(response))
-      .catch(() =>
-        showNotification("Houve um erro interno, tente novamente!", "error")
-      )
-      .finally(() => setLoadings({ ...loadings, all: false }));
-  };
-
-  const getDollar = async () => {
-    setLoadings({ ...loadings, dollar: false });
-    await RequestFN("https://economia.awesomeapi.com.br/all/USD-BRL")
-      .then(response => setData({ ...data, USD: response.USD }))
-      .catch(error =>
-        showNotification("Houve um erro interno, tente novamente!", "error")
-      )
-      .finally(() => setLoadings({ ...loadings, dollar: false }));
-  };
-
-  const getEuro = async () => {
-    setLoadings({ ...loadings, euro: false });
-    await RequestFN("https://economia.awesomeapi.com.br/all/EUR-BRL")
-      .then(response => setData({ ...data, EUR: response.EUR }))
-      .catch(error =>
-        showNotification("Houve um erro interno, tente novamente!", "error")
-      )
-      .finally(() => setLoadings({ ...loadings, euro: false }));
-  };
 
   const doTransaction = (from, to, value) => {
     if (wallet[fee.from] < value / 100) {
@@ -219,14 +156,10 @@ export function useWallet() {
   };
 
   return {
-    getDollarAndEuro,
-    getDollar,
-    getEuro,
     totalInReal: `R$ ${wallet["real"]}`,
     totalInDollar: `$ ${wallet["dollar"]}`,
     totalInEuro: `€ ${wallet["euro"]}`,
     data,
-    loadings,
     transaction,
     setFee,
     fee,
