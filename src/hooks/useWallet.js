@@ -5,17 +5,17 @@ import { toMoney } from "../helpers/masks";
 import values from "../values.json";
 
 export function useWallet() {
-  const data = JSON.parse(values);
+  const data = JSON.parse(JSON.stringify(values));
 
   const [wallet, setWallet] = useState({
     real: 5000,
     dollar: 0,
-    euro: 0
+    euro: 0,
   });
 
   const [fee, setFee] = useState({
     from: "real",
-    to: "dollar"
+    to: "dollar",
   });
 
   const [value, setValue] = useState(0);
@@ -36,11 +36,9 @@ export function useWallet() {
         // and converts it again to the coin selected.
         // In a math way: fee.to = fee.to + (value / 100) * from.value / to.value
         [fee.to]: currency(wallet[fee.to]).add(
-          currency(value)
-            .divide(100)
-            .multiply(from.value)
-            .divide(to.value).value
-        ).value
+          currency(value).divide(100).multiply(from.value).divide(to.value)
+            .value
+        ).value,
       });
     }
   };
@@ -54,10 +52,8 @@ export function useWallet() {
             {
               target: to,
               value: Number(
-                toMoney(data.USD.bid)
-                  .replace("R$ ", "")
-                  .replace(",", ".")
-              )
+                toMoney(data.USD.bid).replace("R$ ", "").replace(",", ".")
+              ),
             },
             value
           ),
@@ -67,15 +63,13 @@ export function useWallet() {
             {
               target: to,
               value: Number(
-                toMoney(data.EUR.bid)
-                  .replace("R$ ", "")
-                  .replace(",", ".")
-              )
+                toMoney(data.EUR.bid).replace("R$ ", "").replace(",", ".")
+              ),
             },
             value
           ),
         real: () =>
-          showNotification("Por favor, selecione outra moeda!", "warning")
+          showNotification("Por favor, selecione outra moeda!", "warning"),
       },
       dollar: {
         dollar: () =>
@@ -85,18 +79,14 @@ export function useWallet() {
             {
               target: to,
               value: Number(
-                toMoney(data.USD.bid)
-                  .replace("R$ ", "")
-                  .replace(",", ".")
-              )
+                toMoney(data.USD.bid).replace("R$ ", "").replace(",", ".")
+              ),
             },
             {
               target: from,
               value: Number(
-                toMoney(data.EUR.bid)
-                  .replace("R$ ", "")
-                  .replace(",", ".")
-              )
+                toMoney(data.EUR.bid).replace("R$ ", "").replace(",", ".")
+              ),
             },
             value
           ),
@@ -105,14 +95,12 @@ export function useWallet() {
             {
               target: to,
               value: Number(
-                toMoney(data.USD.bid)
-                  .replace("R$ ", "")
-                  .replace(",", ".")
-              )
+                toMoney(data.USD.bid).replace("R$ ", "").replace(",", ".")
+              ),
             },
             { target: from, value: 1 },
             value
-          )
+          ),
       },
       euro: {
         dollar: () =>
@@ -120,18 +108,14 @@ export function useWallet() {
             {
               target: to,
               value: Number(
-                toMoney(data.EUR.bid)
-                  .replace("R$ ", "")
-                  .replace(",", ".")
-              )
+                toMoney(data.EUR.bid).replace("R$ ", "").replace(",", ".")
+              ),
             },
             {
               target: from,
               value: Number(
-                toMoney(data.USD.bid)
-                  .replace("R$ ", "")
-                  .replace(",", ".")
-              )
+                toMoney(data.USD.bid).replace("R$ ", "").replace(",", ".")
+              ),
             },
             value
           ),
@@ -142,15 +126,13 @@ export function useWallet() {
             {
               target: to,
               value: Number(
-                toMoney(data.EUR.bid)
-                  .replace("R$ ", "")
-                  .replace(",", ".")
-              )
+                toMoney(data.EUR.bid).replace("R$ ", "").replace(",", ".")
+              ),
             },
             { target: from, value: 1 },
             value
-          )
-      }
+          ),
+      },
     };
     return dictionary[from][to]();
   };
@@ -164,6 +146,6 @@ export function useWallet() {
     setFee,
     fee,
     value,
-    setValue
+    setValue,
   };
 }

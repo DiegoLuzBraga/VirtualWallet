@@ -16,7 +16,7 @@ const useStyle = makeStyles({
     borderRadius: "20px",
     marginRight: "30px",
     marginTop: "2px",
-    boxShadow: "0 2px 8px rgba(0, 0, 0, 0.2)"
+    boxShadow: "0 2px 8px rgba(0, 0, 0, 0.2)",
   },
   cardEuro: {
     padding: "16px",
@@ -28,19 +28,18 @@ const useStyle = makeStyles({
     borderRadius: "20px",
     backgroundColor: "#9FC9A5",
     marginTop: "2px",
-    boxShadow: "0 2px 8px rgba(0, 0, 0, 0.2)"
+    boxShadow: "0 2px 8px rgba(0, 0, 0, 0.2)",
   },
   title: { display: "flex", alignItems: "center" },
-  button: { marginLeft: "40px" },
   icon: {
     marginRight: "8px",
     color: "#000",
-    borderRadius: "8px"
+    borderRadius: "8px",
   },
   dates: {
     color: "#d9d9d9",
     fontSize: "11px",
-    marginTop: "4px"
+    marginTop: "4px",
   },
   coinValues: {
     backgroundColor: "#fff",
@@ -50,16 +49,16 @@ const useStyle = makeStyles({
     justifyContent: "center",
     flexDirection: "column",
     marginTop: "8px",
-    padding: "16px"
+    padding: "16px",
   },
   bid: {
     color: "green",
-    fontWeight: "bold"
+    fontWeight: "bold",
   },
   ask: {
     color: "red",
-    fontWeight: "bold"
-  }
+    fontWeight: "bold",
+  },
 });
 
 export const MoneyCard = ({ ask, bid, date, mark }) => {
@@ -67,7 +66,7 @@ export const MoneyCard = ({ ask, bid, date, mark }) => {
 
   const translate = {
     dollar: "Dólar",
-    euro: "Euro"
+    euro: "Euro",
   };
 
   const iconByMark = () =>
