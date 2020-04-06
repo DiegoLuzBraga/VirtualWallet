@@ -14,4 +14,14 @@
 
 3. Now enter in your browser and access [localhost:3000](https://localhost:3000)
 
+## Stack
+
+- MVC like architecture
+- React
+- Typescript
+- Material UI
+- Notestack
+- Currencyjs
+- dayjs
+
 Enjoy!
