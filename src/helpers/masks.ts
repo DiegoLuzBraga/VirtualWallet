@@ -5,7 +5,7 @@ export function formatDate(date: string, format?: string): string {
 }
 
 export function toMoney(value: string): string {
-  return `R$ ${value.match(/^-?\d+(?:\.\d{0,2})?/)}`.replace(".", ",");
+  return `R$ ${value.match(/^-?\d+(?:\.\d{0,4})?/)}`.replace(".", ",");
 }
 
 export function justNumbers(num: string) {

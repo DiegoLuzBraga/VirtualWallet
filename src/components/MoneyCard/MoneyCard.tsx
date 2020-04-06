@@ -3,16 +3,12 @@ import { makeStyles } from "@material-ui/core";
 import { formatDate, toMoney } from "../../helpers/masks";
 import AttachMoneyRoundedIcon from "@material-ui/icons/AttachMoneyRounded";
 import EuroSymbolRoundedIcon from "@material-ui/icons/EuroSymbolRounded";
-import { LoadingButton } from "../LoadingButton/LoadingButton";
 
 interface Props {
   ask: string;
   bid: string;
   date: string;
-  dollar?: boolean;
-  loading: boolean;
   mark: "dollar" | "euro";
-  updateCurrency(): Promise<void>;
 }
 
 const useStyle = makeStyles({
@@ -42,7 +38,6 @@ const useStyle = makeStyles({
     boxShadow: "0 2px 8px rgba(0, 0, 0, 0.2)"
   },
   title: { display: "flex", alignItems: "center" },
-  button: { marginLeft: "40px" },
   icon: {
     marginRight: "8px",
     color: "#000",
@@ -73,15 +68,7 @@ const useStyle = makeStyles({
   }
 });
 
-export const MoneyCard = ({
-  ask,
-  bid,
-  date,
-  dollar,
-  loading,
-  mark,
-  updateCurrency
-}: Props) => {
+export const MoneyCard = ({ ask, bid, date, mark }: Props) => {
   const classes = useStyle();
 
   const translate: Record<"dollar" | "euro", string> = {
@@ -100,12 +87,6 @@ export const MoneyCard = ({
     <div className={mark === "dollar" ? classes.card : classes.cardEuro}>
       <h3 className={classes.title}>
         {iconByMark()} {translate[mark]}{" "}
-        <LoadingButton
-          className={classes.button}
-          loading={loading}
-          onClick={updateCurrency}
-          dollar={dollar}
-        />
       </h3>
       <label className={classes.dates}>
         {formatDate(date, "DD/MM/YYYY HH:mm").replace(" ", " às ")}
