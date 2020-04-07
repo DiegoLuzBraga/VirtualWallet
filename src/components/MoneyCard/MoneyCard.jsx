@@ -1,97 +1,80 @@
 import React from "react";
-import { makeStyles } from "@material-ui/core";
+import styled from "styled-components";
 import { formatDate, toMoney } from "../../helpers/masks";
 import AttachMoneyRoundedIcon from "@material-ui/icons/AttachMoneyRounded";
 import EuroSymbolRoundedIcon from "@material-ui/icons/EuroSymbolRounded";
 
-const useStyle = makeStyles({
-  card: {
-    padding: "16px",
-    color: "#fff",
-    display: "flex",
-    justifyContent: "space-evenly",
-    alignItems: "center",
-    flexDirection: "column",
-    backgroundColor: "#9AC5E5",
-    borderRadius: "20px",
-    marginRight: "30px",
-    marginTop: "2px",
-    boxShadow: "0 2px 8px rgba(0, 0, 0, 0.2)",
-  },
-  cardEuro: {
-    padding: "16px",
-    color: "#fff",
-    display: "flex",
-    justifyContent: "space-evenly",
-    alignItems: "center",
-    flexDirection: "column",
-    borderRadius: "20px",
-    backgroundColor: "#9FC9A5",
-    marginTop: "2px",
-    boxShadow: "0 2px 8px rgba(0, 0, 0, 0.2)",
-  },
-  title: { display: "flex", alignItems: "center" },
-  icon: {
-    marginRight: "8px",
-    color: "#000",
-    borderRadius: "8px",
-  },
-  dates: {
-    color: "#d9d9d9",
-    fontSize: "11px",
-    marginTop: "4px",
-  },
-  coinValues: {
-    backgroundColor: "#fff",
-    borderRadius: "20px",
-    color: "#000",
-    display: "flex",
-    justifyContent: "center",
-    flexDirection: "column",
-    marginTop: "8px",
-    padding: "16px",
-  },
-  bid: {
-    color: "green",
-    fontWeight: "bold",
-  },
-  ask: {
-    color: "red",
-    fontWeight: "bold",
-  },
-});
+const CoinValues = styled.div`
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  background-color: #fff;
+  padding: 16px;
+  color: #000;
+  border-radius: 20px;
+  margin-top: 8px;
+`;
+
+const Card = styled(CoinValues)`
+  justify-content: space-evenly;
+  align-items: center;
+  color: #fff;
+  background-color: ${(props) => (props.isDollar ? "#9AC5E5" : "#9FC9A5")};
+  margin-right: ${(props) => (props.isDollar ? "30px" : "0px")};
+  margin-top: 2px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+`;
+
+const CoinTitle = styled.h3`
+  display: flex;
+  align-items: center;
+`;
+
+const Dates = styled.label`
+  color: #d9d9d9;
+  font-size: 11px;
+  margin-top: 4px;
+`;
+
+const Values = styled.span`
+  color: ${(props) => (props.isBid ? "green" : "red")};
+  font-weight: "bold";
+`;
+
+const DollarIcon = styled(AttachMoneyRoundedIcon)`
+  margin-right: 8px;
+  color: #000;
+  border-radius: 8px;
+`;
+
+const EuroIcon = styled(EuroSymbolRoundedIcon)`
+  margin-right: 8px;
+  color: #000;
+  border-radius: 8px;
+`;
 
 export const MoneyCard = ({ ask, bid, date, mark }) => {
-  const classes = useStyle();
-
   const translate = {
     dollar: "Dólar",
     euro: "Euro",
   };
 
-  const iconByMark = () =>
-    mark === "dollar" ? (
-      <AttachMoneyRoundedIcon className={classes.icon} />
-    ) : (
-      <EuroSymbolRoundedIcon className={classes.icon} />
-    );
+  const iconByMark = () => (mark === "dollar" ? <DollarIcon /> : <EuroIcon />);
 
   return (
-    <div className={mark === "dollar" ? classes.card : classes.cardEuro}>
-      <h3 className={classes.title}>
+    <Card isDollar={mark === "dollar"}>
+      <CoinTitle>
         {iconByMark()} {translate[mark]}{" "}
-      </h3>
-      <label className={classes.dates}>
-        {formatDate(date, "DD/MM/YYYY HH:mm").replace(" ", " às ")}
-      </label>
-      <div className={classes.coinValues}>
+      </CoinTitle>
+      <Dates>{formatDate(date, "DD/MM/YYYY HH:mm").replace(" ", " às ")}</Dates>
+      <CoinValues>
         <label>
-          <span className={classes.bid}>C</span>: {toMoney(bid)}
+          <Values isBid>C</Values>: {toMoney(bid)}
         </label>
         <label>
-          <span className={classes.ask}>V</span>: {toMoney(ask)}
+          <Values>V</Values>: {toMoney(ask)}
         </label>
-      </div>
-    </div>
+      </CoinValues>
+    </Card>
   );
 };
