@@ -38,11 +38,19 @@ const Selects = styled(WalletValues)`
 `;
 
 const CardContent = styled(WalletValues)`
-  display: flex;
   flex-wrap: wrap;
+  flex-direction: row;
   padding: 30px;
   border-radius: 30px;
   background-color: #e6f0fd;
+  @media screen and (max-width: 572px) {
+    justify-content: center;
+    padding: 30px 60px;
+  }
+  @media screen and (max-width: 400px) {
+    justify-content: center;
+    padding: 30px;
+  }
 `;
 
 const Converter = styled(WalletValues)`

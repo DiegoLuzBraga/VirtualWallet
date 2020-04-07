@@ -16,13 +16,18 @@ const CoinValues = styled.div`
 `;
 
 const Card = styled(CoinValues)`
+  width: 200px;
   justify-content: space-evenly;
   align-items: center;
   color: #fff;
   background-color: ${(props) => (props.isDollar ? "#9AC5E5" : "#9FC9A5")};
   margin-right: ${(props) => (props.isDollar ? "30px" : "0px")};
   margin-top: 2px;
+  margin-bottom: 12px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  @media screen and (max-width: 571px) {
+    margin-right: 0px;
+  }
 `;
 
 const CoinTitle = styled.h3`
