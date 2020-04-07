@@ -1,58 +1,56 @@
 import React from "react";
-import { makeStyles, Select, InputLabel } from "@material-ui/core";
+import styled from "styled-components";
+import { Select, InputLabel } from "@material-ui/core";
 import { MenuItem } from "@material-ui/core";
 import { MoneyCard } from "../MoneyCard/MoneyCard";
 import { justNumbers, currencyMask } from "../../helpers/masks";
 import { useWallet } from "../../hooks/useWallet";
 
-const useStyle = makeStyles({
-  wallet: {
-    marginTop: "25px",
-    border: "8px solid #fff",
-    borderRadius: "40px",
-    backgroundColor: "#fff"
-  },
-  walletValues: {
-    display: "flex",
-    flexDirection: "column"
-  },
-  valuesByCoin: {
-    display: "flex",
-    flexDirection: "column",
-    marginLeft: "8px"
-  },
-  walletContent: {
-    display: "flex",
-    justifyContent: "space-between",
-    alignItems: "baseline",
-    flexDirection: "row",
-    flexWrap: "wrap",
-    backgroundColor: "#fff",
-    borderRadius: "20px 20px 0 0",
-    padding: "25px"
-  },
-  cardContent: {
-    display: "flex",
-    flexWrap: "wrap",
-    padding: "30px",
-    borderRadius: "30px",
-    backgroundColor: "#E6F0FD"
-  },
-  converter: {
-    display: "flex",
-    flexDirection: "row",
-    flexWrap: "wrap"
-  },
-  selects: {
-    width: "65px",
-    display: "flex",
-    flexDirection: "column",
-    marginLeft: "16px"
-  }
-});
+const WalletContainer = styled.div`
+  margin-top: 25px;
+  border: 8px solid #fff;
+  border-radius: 40px;
+  background-color: #fff;
+`;
+
+const WalletValues = styled.div`
+  display: flex;
+  flex-direction: column;
+`;
+
+const ValuesByCoin = styled(WalletValues)`
+  margin-left: 8px;
+`;
+
+const WalletContent = styled(WalletValues)`
+  justify-content: space-between;
+  align-items: baseline;
+  flex-direction: row;
+  flex-wrap: wrap;
+  background-color: #fff;
+  border-radius: 20px 20px 0 0;
+  padding: 25px;
+`;
+
+const Selects = styled(WalletValues)`
+  width: 65px;
+  margin-left: 16px;
+`;
+
+const CardContent = styled(WalletValues)`
+  display: flex;
+  flex-wrap: wrap;
+  padding: 30px;
+  border-radius: 30px;
+  background-color: #e6f0fd;
+`;
+
+const Converter = styled(WalletValues)`
+  flex-direction: row;
+  flex-wrap: wrap;
+`;
 
 export const Wallet = () => {
-  const classes = useStyle();
   const {
     data,
     totalInReal,
@@ -62,58 +60,54 @@ export const Wallet = () => {
     setFee,
     fee,
     setValue,
-    value
+    value,
   } = useWallet();
 
   return (
-    <div className={classes.wallet}>
-      <div className={classes.walletContent}>
-        <div className={classes.walletValues}>
+    <WalletContainer>
+      <WalletContent>
+        <WalletValues>
           <h1>Saldo</h1>
-          <div className={classes.valuesByCoin}>
+          <ValuesByCoin>
             <h2>Reais: {totalInReal}</h2>
             <h2>Dólar: {totalInDollar}</h2>
             <h2>Euro: {totalInEuro}</h2>
-          </div>
-        </div>
-        <div className={classes.converter}>
-          <div className={classes.selects}>
-            <InputLabel shrink id="demo-simple-select-placeholder-label-label">
-              De
-            </InputLabel>
+          </ValuesByCoin>
+        </WalletValues>
+        <Converter>
+          <Selects>
+            <InputLabel shrink>De</InputLabel>
             <Select
               value={fee.from}
-              onChange={e => setFee({ ...fee, from: e.target.value })}
+              onChange={(e) => setFee({ ...fee, from: e.target.value })}
             >
               <MenuItem value="real">Real</MenuItem>
               <MenuItem value="dollar">Dólar</MenuItem>
               <MenuItem value="euro">Euro</MenuItem>
             </Select>
-          </div>
-          <div className={classes.selects}>
-            <InputLabel shrink id="demo-simple-select-placeholder-label-label">
-              Para
-            </InputLabel>
+          </Selects>
+          <Selects>
+            <InputLabel shrink>Para</InputLabel>
             <Select
               value={fee.to}
-              onChange={e => setFee({ ...fee, to: e.target.value })}
+              onChange={(e) => setFee({ ...fee, to: e.target.value })}
             >
               <MenuItem value="real">Real</MenuItem>
               <MenuItem value="dollar">Dólar</MenuItem>
               <MenuItem value="euro">Euro</MenuItem>
             </Select>
-          </div>
+          </Selects>
           <input
             type="text"
             value={currencyMask(value, 2, ",", ".").toString()}
-            onChange={e => setValue(Number(justNumbers(e.target.value)))}
+            onChange={(e) => setValue(Number(justNumbers(e.target.value)))}
           />
           <button onClick={() => transaction(fee.from, fee.to, value)}>
             Converter
           </button>
-        </div>
-      </div>
-      <div className={classes.cardContent}>
+        </Converter>
+      </WalletContent>
+      <CardContent>
         <MoneyCard
           ask={data.USD.ask}
           bid={data.USD.bid}
@@ -126,7 +120,7 @@ export const Wallet = () => {
           date={data.EUR.create_date}
           mark="euro"
         />
-      </div>
-    </div>
+      </CardContent>
+    </WalletContainer>
   );
 };
