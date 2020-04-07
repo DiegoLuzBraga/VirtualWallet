@@ -1,7 +1,5 @@
 import React from "react";
 import styled from "styled-components";
-import { Select, InputLabel } from "@material-ui/core";
-import { MenuItem } from "@material-ui/core";
 import { MoneyCard } from "../MoneyCard/MoneyCard";
 import { justNumbers, currencyMask } from "../../helpers/masks";
 import { useWallet } from "../../hooks/useWallet";
@@ -24,7 +22,7 @@ const ValuesByCoin = styled(WalletValues)`
 
 const WalletContent = styled(WalletValues)`
   justify-content: space-between;
-  align-items: baseline;
+  align-items: flex-start;
   flex-direction: row;
   flex-wrap: wrap;
   background-color: #fff;
@@ -34,7 +32,14 @@ const WalletContent = styled(WalletValues)`
 
 const Selects = styled(WalletValues)`
   width: 65px;
-  margin-left: 16px;
+  margin: 0 16px 0 0;
+  @media screen and (max-width: 721px) {
+    margin-top: 12px;
+  }
+  @media (max-width: 424px) {
+    width: -webkit-fill-available;
+    margin-right: 0;
+  }
 `;
 
 const CardContent = styled(WalletValues)`
@@ -56,6 +61,69 @@ const CardContent = styled(WalletValues)`
 const Converter = styled(WalletValues)`
   flex-direction: row;
   flex-wrap: wrap;
+  align-items: flex-end;
+`;
+
+const InputLabel = styled.label`
+  display: block;
+  transform-origin: top left;
+  opacity: 0.54;
+  font-size: 12px;
+  line-height: 1;
+`;
+
+const Select = styled.select`
+  height: 32px;
+  border-radius: 5px;
+  border: 1px solid #bfbfbf;
+  margin-top: 5px;
+`;
+
+const MoneyInput = styled.input`
+  height: 32px;
+  border-radius: 5px;
+  border: 1px solid #bfbfbf;
+  margin-top: 5px;
+  padding: 0 12px;
+  margin-right: 16px;
+
+  @media (max-width: 424px) {
+    width: -webkit-fill-available;
+    margin-top: 12px;
+    margin-right: 0;
+  }
+`;
+
+const Button = styled.button`
+  height: 32px;
+  background-color: #2ed06e;
+  color: #fff;
+  border: 1px solid transparent;
+  border-radius: 4px;
+  padding: 0 16px;
+  transition: all 0.15s ease-in-out;
+  outline: none;
+  &:hover {
+    opacity: 0.8;
+  }
+  &:focus {
+    background-color: #28b862;
+    border-color: #28b862;
+  }
+
+  @media (min-width: 506px) and (max-width: 614px) {
+    width: -webkit-fill-available;
+    margin-top: 12px;
+  }
+
+  @media (max-width: 505px) {
+    width: 195px;
+  }
+
+  @media (max-width: 424px) {
+    margin-top: 12px;
+    width: -webkit-fill-available;
+  }
 `;
 
 export const Wallet = () => {
@@ -84,35 +152,37 @@ export const Wallet = () => {
         </WalletValues>
         <Converter>
           <Selects>
-            <InputLabel shrink>De</InputLabel>
+            <InputLabel>De</InputLabel>
             <Select
               value={fee.from}
               onChange={(e) => setFee({ ...fee, from: e.target.value })}
             >
-              <MenuItem value="real">Real</MenuItem>
-              <MenuItem value="dollar">Dólar</MenuItem>
-              <MenuItem value="euro">Euro</MenuItem>
+              <option value="real">Real</option>
+              <option value="dollar">Dólar</option>
+              <option value="euro">Euro</option>
             </Select>
           </Selects>
-          <Selects>
-            <InputLabel shrink>Para</InputLabel>
-            <Select
-              value={fee.to}
-              onChange={(e) => setFee({ ...fee, to: e.target.value })}
-            >
-              <MenuItem value="real">Real</MenuItem>
-              <MenuItem value="dollar">Dólar</MenuItem>
-              <MenuItem value="euro">Euro</MenuItem>
-            </Select>
-          </Selects>
-          <input
+
+          <MoneyInput
             type="text"
             value={currencyMask(value, 2, ",", ".").toString()}
             onChange={(e) => setValue(Number(justNumbers(e.target.value)))}
           />
-          <button onClick={() => transaction(fee.from, fee.to, value)}>
+
+          <Selects>
+            <InputLabel>Para</InputLabel>
+            <Select
+              value={fee.to}
+              onChange={(e) => setFee({ ...fee, to: e.target.value })}
+            >
+              <option value="real">Real</option>
+              <option value="dollar">Dólar</option>
+              <option value="euro">Euro</option>
+            </Select>
+          </Selects>
+          <Button onClick={() => transaction(fee.from, fee.to, value)}>
             Converter
-          </button>
+          </Button>
         </Converter>
       </WalletContent>
       <CardContent>

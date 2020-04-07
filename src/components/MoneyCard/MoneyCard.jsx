@@ -1,8 +1,8 @@
 import React from "react";
 import styled from "styled-components";
 import { formatDate, toMoney } from "../../helpers/masks";
-import AttachMoneyRoundedIcon from "@material-ui/icons/AttachMoneyRounded";
-import EuroSymbolRoundedIcon from "@material-ui/icons/EuroSymbolRounded";
+import { Euro } from "./icons/Euro";
+import { Dollar } from "./icons/Dollar";
 
 const CoinValues = styled.div`
   display: flex;
@@ -46,30 +46,16 @@ const Values = styled.span`
   font-weight: "bold";
 `;
 
-const DollarIcon = styled(AttachMoneyRoundedIcon)`
-  margin-right: 8px;
-  color: #000;
-  border-radius: 8px;
-`;
-
-const EuroIcon = styled(EuroSymbolRoundedIcon)`
-  margin-right: 8px;
-  color: #000;
-  border-radius: 8px;
-`;
-
 export const MoneyCard = ({ ask, bid, date, mark }) => {
   const translate = {
     dollar: "Dólar",
     euro: "Euro",
   };
 
-  const iconByMark = () => (mark === "dollar" ? <DollarIcon /> : <EuroIcon />);
-
   return (
     <Card isDollar={mark === "dollar"}>
       <CoinTitle>
-        {iconByMark()} {translate[mark]}{" "}
+        {mark === "dollar" ? <Dollar /> : <Euro />} {translate[mark]}{" "}
       </CoinTitle>
       <Dates>{formatDate(date, "DD/MM/YYYY HH:mm").replace(" ", " às ")}</Dates>
       <CoinValues>
