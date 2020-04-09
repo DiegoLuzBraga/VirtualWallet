@@ -1,32 +1,29 @@
 import React from "react";
-import { Wallet } from "./components/Wallet/Wallet";
-import { ThemeProvider, CssBaseline } from "@material-ui/core";
-import "./styles/global.scss";
 import { SnackbarProvider } from "notistack";
-// import {
-//   Provider,
-//   createStoreHook,
-//   createDispatchHook,
-//   createSelectorHook,
-// } from "react-redux";
-// import { createStore } from "redux";
+import { Provider } from "react-redux";
+import { createStore, combineReducers } from "redux";
+import {
+  WalletReducer,
+  FeeReducer,
+  TransactionReducer,
+} from "../src/reducers/reducers";
+import Wallet from "./components/Wallet/Wallet";
+import "./styles/global.scss";
 
-// const MyContext = React.createContext(null);
-// export const useStore = createStoreHook(MyContext);
-// export const useDispatch = createDispatchHook(MyContext);
-// export const useSelector = createSelectorHook(MyContext);
+const rootReducers = combineReducers({
+  wallet: WalletReducer,
+  fee: FeeReducer,
+  transactionValue: TransactionReducer,
+});
 
-// const myStore = createStore(rootReducer);
+const store = createStore(rootReducers);
 
 function App() {
   return (
     <SnackbarProvider maxSnack={3}>
-      <ThemeProvider>
-        <CssBaseline />
+      <Provider store={store}>
         <Wallet />
-        {/* <Provider context={MyContext} store={myStore}>
-        </Provider> */}
-      </ThemeProvider>
+      </Provider>
     </SnackbarProvider>
   );
 }

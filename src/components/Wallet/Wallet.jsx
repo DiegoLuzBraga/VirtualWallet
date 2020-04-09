@@ -1,8 +1,17 @@
 import React from "react";
 import styled from "styled-components";
+import { connect } from "react-redux";
 import { MoneyCard } from "../MoneyCard/MoneyCard";
 import { justNumbers, currencyMask } from "../../helpers/masks";
 import { useWallet } from "../../hooks/useWallet";
+import {
+  WalletReducer,
+  FeeReducer,
+  TransactionReducer,
+} from "../../reducers/reducers";
+import values from "../../values.json";
+
+const data = JSON.parse(JSON.stringify(values));
 
 const WalletContainer = styled.div`
   margin-top: 25px;
@@ -126,9 +135,8 @@ const Button = styled.button`
   }
 `;
 
-export const Wallet = () => {
+export const Wallet = (props) => {
   const {
-    data,
     totalInReal,
     totalInEuro,
     totalInDollar,
@@ -202,3 +210,17 @@ export const Wallet = () => {
     </WalletContainer>
   );
 };
+
+const mapStateToProps = (state) => ({
+  wallet: state.wallet,
+  fee: state.fee,
+  transactionValue: state.transactionValue,
+});
+
+const mapDispatchToProps = (dispatch) => ({
+  walletReducer: WalletReducer,
+  feeReducer: FeeReducer,
+  transactionReducer: TransactionReducer,
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(Wallet);
