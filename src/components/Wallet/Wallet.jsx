@@ -1,17 +1,14 @@
 import React from "react";
 import styled from "styled-components";
 import { connect } from "react-redux";
+import { useNotification } from "../../hooks/useNotification";
 import { MoneyCard } from "../MoneyCard/MoneyCard";
-import { justNumbers, currencyMask } from "../../helpers/masks";
-import { useWallet } from "../../hooks/useWallet";
-import {
-  WalletReducer,
-  FeeReducer,
-  TransactionReducer,
-} from "../../reducers/reducers";
+import { currencyMask, justNumbers } from "../../helpers/masks";
 import values from "../../values.json";
 
 const data = JSON.parse(JSON.stringify(values));
+
+const showNotification = useNotification();
 
 const WalletContainer = styled.div`
   margin-top: 25px;
@@ -136,16 +133,7 @@ const Button = styled.button`
 `;
 
 export const Wallet = (props) => {
-  const {
-    totalInReal,
-    totalInEuro,
-    totalInDollar,
-    transaction,
-    setFee,
-    fee,
-    setValue,
-    value,
-  } = useWallet();
+  const { fee, wallet, transactionValue } = props;
 
   return (
     <WalletContainer>
@@ -153,9 +141,9 @@ export const Wallet = (props) => {
         <WalletValues>
           <h1>Saldo</h1>
           <ValuesByCoin>
-            <h2>Reais: {totalInReal}</h2>
-            <h2>Dólar: {totalInDollar}</h2>
-            <h2>Euro: {totalInEuro}</h2>
+            <h2>Reais: {`R$ ${wallet.BRL}`}</h2>
+            <h2>Dólar: {`$ ${wallet.USD}`}</h2>
+            <h2>Euro: {`€ ${wallet.EUR}`}</h2>
           </ValuesByCoin>
         </WalletValues>
         <Converter>
@@ -163,32 +151,46 @@ export const Wallet = (props) => {
             <InputLabel>De</InputLabel>
             <Select
               value={fee.from}
-              onChange={(e) => setFee({ ...fee, from: e.target.value })}
+              onChange={(e) => props.changeFromValue(e.target.value)}
             >
-              <option value="real">Real</option>
-              <option value="dollar">Dólar</option>
-              <option value="euro">Euro</option>
+              <option value="BRL">Real</option>
+              <option value="USD">Dólar</option>
+              <option value="EUR">Euro</option>
             </Select>
           </Selects>
 
           <MoneyInput
             type="text"
-            value={currencyMask(value, 2, ",", ".").toString()}
-            onChange={(e) => setValue(Number(justNumbers(e.target.value)))}
+            value={currencyMask(transactionValue, 2, ",", ".").toString()}
+            onChange={(e) =>
+              props.changeTransactionValue(Number(justNumbers(e.target.value)))
+            }
           />
 
           <Selects>
             <InputLabel>Para</InputLabel>
             <Select
               value={fee.to}
-              onChange={(e) => setFee({ ...fee, to: e.target.value })}
+              onChange={(e) => props.changeToValue(e.target.value)}
             >
-              <option value="real">Real</option>
-              <option value="dollar">Dólar</option>
-              <option value="euro">Euro</option>
+              <option value="BRL">Real</option>
+              <option value="USD">Dólar</option>
+              <option value="EUR">Euro</option>
             </Select>
           </Selects>
-          <Button onClick={() => transaction(fee.from, fee.to, value)}>
+          <Button
+            onClick={() =>
+              props.processTransaction(
+                `${fee.from.toUpperCase()}_TO_${fee.to.toUpperCase()}`,
+                {
+                  ...wallet,
+                  value: transactionValue,
+                  from: fee.from === "BRL" ? 1 : data[fee.from].bid,
+                  to: fee.to === "BRL" ? 1 : data[fee.to].ask,
+                }
+              )
+            }
+          >
             Converter
           </Button>
         </Converter>
@@ -211,16 +213,21 @@ export const Wallet = (props) => {
   );
 };
 
-const mapStateToProps = (state) => ({
-  wallet: state.wallet,
-  fee: state.fee,
-  transactionValue: state.transactionValue,
-});
+const mapStateToProps = (state) => {
+  return {
+    wallet: state.wallet,
+    fee: state.fee,
+    transactionValue: state.transactionValue,
+  };
+};
 
 const mapDispatchToProps = (dispatch) => ({
-  walletReducer: WalletReducer,
-  feeReducer: FeeReducer,
-  transactionReducer: TransactionReducer,
+  processTransaction: (dispatchType, value) =>
+    dispatch({ type: dispatchType, values: value }),
+  changeFromValue: (value) => dispatch({ type: "FROM", from: value }),
+  changeToValue: (value) => dispatch({ type: "TO", to: value }),
+  changeTransactionValue: (value) =>
+    dispatch({ type: "CHANGE_VALUE", total: value }),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Wallet);

@@ -14,8 +14,8 @@ export function useWallet() {
   });
 
   const [fee, setFee] = useState({
-    from: "real",
-    to: "dollar",
+    from: "BRL",
+    to: "USD",
   });
 
   const [value, setValue] = useState(0);
@@ -138,10 +138,6 @@ export function useWallet() {
   };
 
   return {
-    totalInReal: `R$ ${wallet["real"]}`,
-    totalInDollar: `$ ${wallet["dollar"]}`,
-    totalInEuro: `€ ${wallet["euro"]}`,
-    data,
     transaction,
     setFee,
     fee,
