@@ -1,14 +1,11 @@
 import React from "react";
 import styled from "styled-components";
 import { connect } from "react-redux";
-import { useNotification } from "../../hooks/useNotification";
 import { MoneyCard } from "../MoneyCard/MoneyCard";
 import { currencyMask, justNumbers } from "../../helpers/masks";
 import values from "../../values.json";
 
 const data = JSON.parse(JSON.stringify(values));
-
-const showNotification = useNotification();
 
 const WalletContainer = styled.div`
   margin-top: 25px;
