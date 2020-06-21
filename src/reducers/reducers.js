@@ -15,12 +15,8 @@ const transactionValue = 0;
 
 const doTransaction = (state, from, to, value) => {
   if (state[fee.from] < value / 100) {
-    return console.log(
-      "O valor escolhido é maior do que o limite disponível!",
-      "warning"
-    );
+    return alert("O valor escolhido é maior do que o limite disponível!");
   } else {
-    console.log(state, from, to, value, state[from], state[to]);
     return {
       ...state,
       [from.target]: currency(state[from.target]).subtract(value / 100).value,
@@ -59,7 +55,7 @@ export const WalletReducer = (state = walletState, action) => {
         action.values.value
       );
     case "BRL_TO_BRL":
-      return console.log("Por favor, selecione outra moeda!", "warning");
+      return alert("Por favor, selecione outra moeda!");
     case "USD_TO_BRL":
       return doTransaction(
         {
@@ -83,7 +79,7 @@ export const WalletReducer = (state = walletState, action) => {
         action.values.value
       );
     case "USD_TO_USD":
-      return console.log("Por favor, selecione outra moeda!", "warning");
+      return alert("Por favor, selecione outra moeda!");
     case "EUR_TO_BRL":
       return doTransaction(
         {
@@ -107,7 +103,7 @@ export const WalletReducer = (state = walletState, action) => {
         action.values.value
       );
     case "EUR_TO_EUR":
-      return console.log("Por favor, selecione outra moeda!", "warning");
+      return alert("Por favor, selecione outra moeda!");
     default:
       return state;
   }
