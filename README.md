@@ -16,11 +16,10 @@
 
 ## Stack
 
-- MVC like architecture
+- Redux
 - React
-- Typescript
-- Material UI
-- Notestack
+- Javascript
+- Styled Components
 - Currencyjs
 - dayjs
 
