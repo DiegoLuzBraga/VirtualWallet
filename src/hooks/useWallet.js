@@ -1,33 +1,28 @@
 import { useState } from "react";
 import currency from "currency.js";
-import { CurrencyValues, coins } from "../../types/types";
-import { useNotification } from "../../hooks/useNotification";
-import { toMoney } from "../../helpers/masks";
-import values from "../../values.json";
+import { useNotification } from "./useNotification";
+import { toMoney } from "../helpers/masks";
+import values from "../values.json";
 
 export function useWallet() {
-  const data: CurrencyValues = JSON.parse(JSON.stringify(values));
+  const data = JSON.parse(JSON.stringify(values));
 
-  const [wallet, setWallet] = useState<Record<coins, number>>({
+  const [wallet, setWallet] = useState({
     real: 5000,
     dollar: 0,
-    euro: 0
+    euro: 0,
   });
 
-  const [fee, setFee] = useState<{ from: coins; to: coins }>({
-    from: "real",
-    to: "dollar"
+  const [fee, setFee] = useState({
+    from: "BRL",
+    to: "USD",
   });
 
-  const [value, setValue] = useState<number>(0);
+  const [value, setValue] = useState(0);
 
   const showNotification = useNotification();
 
-  const doTransaction = (
-    from: { target: coins; value: number },
-    to: { target: coins; value: number },
-    value: number
-  ) => {
+  const doTransaction = (from, to, value) => {
     if (wallet[fee.from] < value / 100) {
       return showNotification(
         "O valor escolhido é maior do que o limite disponível!",
@@ -37,17 +32,18 @@ export function useWallet() {
       return setWallet({
         ...wallet,
         [fee.from]: currency(wallet[fee.from]).subtract(value / 100).value,
+        // this operation converts the value passed to reais
+        // and converts it again to the coin selected.
+        // In a math way: fee.to = fee.to + (value / 100) * from.value / to.value
         [fee.to]: currency(wallet[fee.to]).add(
-          currency(value)
-            .divide(100)
-            .multiply(from.value)
-            .divide(to.value).value
-        ).value
+          currency(value).divide(100).multiply(from.value).divide(to.value)
+            .value
+        ).value,
       });
     }
   };
 
-  const transaction = (from: coins, to: coins, value: number) => {
+  const transaction = (from, to, value) => {
     const dictionary = {
       real: {
         dollar: () =>
@@ -56,10 +52,8 @@ export function useWallet() {
             {
               target: to,
               value: Number(
-                toMoney(data.USD.bid)
-                  .replace("R$ ", "")
-                  .replace(",", ".")
-              )
+                toMoney(data.USD.bid).replace("R$ ", "").replace(",", ".")
+              ),
             },
             value
           ),
@@ -69,15 +63,13 @@ export function useWallet() {
             {
               target: to,
               value: Number(
-                toMoney(data.EUR.bid)
-                  .replace("R$ ", "")
-                  .replace(",", ".")
-              )
+                toMoney(data.EUR.bid).replace("R$ ", "").replace(",", ".")
+              ),
             },
             value
           ),
         real: () =>
-          showNotification("Por favor, selecione outra moeda!", "warning")
+          showNotification("Por favor, selecione outra moeda!", "warning"),
       },
       dollar: {
         dollar: () =>
@@ -87,18 +79,14 @@ export function useWallet() {
             {
               target: to,
               value: Number(
-                toMoney(data.USD.bid)
-                  .replace("R$ ", "")
-                  .replace(",", ".")
-              )
+                toMoney(data.USD.bid).replace("R$ ", "").replace(",", ".")
+              ),
             },
             {
               target: from,
               value: Number(
-                toMoney(data.EUR.bid)
-                  .replace("R$ ", "")
-                  .replace(",", ".")
-              )
+                toMoney(data.EUR.bid).replace("R$ ", "").replace(",", ".")
+              ),
             },
             value
           ),
@@ -107,14 +95,12 @@ export function useWallet() {
             {
               target: to,
               value: Number(
-                toMoney(data.USD.bid)
-                  .replace("R$ ", "")
-                  .replace(",", ".")
-              )
+                toMoney(data.USD.bid).replace("R$ ", "").replace(",", ".")
+              ),
             },
             { target: from, value: 1 },
             value
-          )
+          ),
       },
       euro: {
         dollar: () =>
@@ -122,18 +108,14 @@ export function useWallet() {
             {
               target: to,
               value: Number(
-                toMoney(data.EUR.bid)
-                  .replace("R$ ", "")
-                  .replace(",", ".")
-              )
+                toMoney(data.EUR.bid).replace("R$ ", "").replace(",", ".")
+              ),
             },
             {
               target: from,
               value: Number(
-                toMoney(data.USD.bid)
-                  .replace("R$ ", "")
-                  .replace(",", ".")
-              )
+                toMoney(data.USD.bid).replace("R$ ", "").replace(",", ".")
+              ),
             },
             value
           ),
@@ -144,28 +126,22 @@ export function useWallet() {
             {
               target: to,
               value: Number(
-                toMoney(data.EUR.bid)
-                  .replace("R$ ", "")
-                  .replace(",", ".")
-              )
+                toMoney(data.EUR.bid).replace("R$ ", "").replace(",", ".")
+              ),
             },
             { target: from, value: 1 },
             value
-          )
-      }
+          ),
+      },
     };
     return dictionary[from][to]();
   };
 
   return {
-    totalInReal: `R$ ${wallet["real"]}`,
-    totalInDollar: `$ ${wallet["dollar"]}`,
-    totalInEuro: `€ ${wallet["euro"]}`,
-    data,
     transaction,
     setFee,
     fee,
     value,
-    setValue
-  } as const;
+    setValue,
+  };
 }

@@ -1,13 +1,13 @@
-import { useSnackbar, OptionsObject } from "notistack";
+import { useSnackbar } from "notistack";
 
 export const useNotification = () => {
   const { enqueueSnackbar } = useSnackbar();
-  return (msg: string, variant: OptionsObject["variant"]) =>
+  return (msg, variant) =>
     enqueueSnackbar(msg, {
       variant,
       anchorOrigin: {
         vertical: "bottom",
-        horizontal: "right"
-      }
+        horizontal: "right",
+      },
     });
 };
